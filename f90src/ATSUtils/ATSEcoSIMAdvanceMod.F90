@@ -65,7 +65,7 @@ implicit none
   implicit none
   integer, intent(in) :: NYS  !Number of columns?
 
-  integer :: NY,NX,NZ,L,NHW,NHE,NVN,NVS, I, J, M, heat_vec_size, NPH_Test, LS, npfts, NP
+  integer :: NY,NX,NZ,NK,L,NHW,NHE,NVN,NVS, I, J, M, heat_vec_size, NPH_Test, LS, npfts, NP
   integer :: nu_plt
   logical :: pft_changed
   real(r8) :: Wat_next
@@ -513,6 +513,13 @@ implicit none
       DO NZ=1,num_pfts
         a_SSWS(L,NY) = a_SSWS(L,NY) + RPlantRootH2OUptk_pvr(1,L,NZ,NY,NX)
       ENDDO
+
+      if(microbe_bool)then
+        DO NK=1,num_components
+          a_MFrac_ss_source(L,NY,NK) = 0.1
+        ENDDO
+      endif
+
     ENDDO
   ENDDO
 

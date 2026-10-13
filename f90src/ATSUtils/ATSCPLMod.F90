@@ -56,6 +56,7 @@ contains
   p_bool = config%p_bool
   a_bool = config%a_bool
   pheno_bool = config%pheno_bool
+  microbe_bool = config%microbe_bool
 
   end subroutine CopyConfigFromATS
 !------------------------------------------------------------------------------------------
@@ -70,7 +71,7 @@ contains
   real(r8), pointer :: data(:)
   real(r8), pointer :: data2D(:,:)
   real(r8), pointer :: data3D(:,:,:)
-  integer :: size_col, num_cols, num_components
+  integer :: size_col, num_cols
   type(c_ptr) :: data_ptr
 
   size_col = sizes%ncells_per_col_
@@ -80,7 +81,7 @@ contains
 
   data_ptr = env%mole_fraction%data
   call c_f_pointer(data_ptr, data3D, [size_col, num_cols, num_components])
-  !a_MFrac=data3D(:,:,:)
+  a_MFrac=data3D(:,:,:)
 
   data_ptr = env%temperature%data
   call c_f_pointer(data_ptr, data2D, [size_col, num_cols])
@@ -212,7 +213,8 @@ contains
 
   real(r8), pointer :: data(:)
   real(r8), pointer :: data2D(:,:)
-  integer :: size_col, num_cols
+  real(r8), pointer :: data3D(:,:,:)
+  integer :: size_col, num_cols, num_comps
 
   size_col = sizes%ncells_per_col_
   num_cols = feedback%snow_depth%size
@@ -235,6 +237,12 @@ contains
   call c_f_pointer(feedback%canopy_snow%data, data2D, [sizes%num_pfts, num_cols])
   a_CanSnow = data2D(:,:)
 
+  if (microbe_bool) then
+    num_comps = feedback%subsurface_mole_fraction_source%components
+    call c_f_pointer(feedback%subsurface_mole_fraction_source%data, data3D, [size_col, num_cols, num_comps])
+    a_MFrac_ss_source = data3D(:,:,:)
+  end if
+
   end subroutine CopyFeedbackFromATS
 !------------------------------------------------------------------------------------------
 
@@ -247,7 +255,8 @@ contains
 
   real(r8), pointer :: data(:)
   real(r8), pointer :: data2D(:,:)
-  integer :: size_col, num_cols
+  real(r8), pointer :: data3D(:,:,:)
+  integer :: size_col, num_cols, num_comps
 
   size_col = sizes%ncells_per_col_
   num_cols = sizes%num_columns
@@ -269,6 +278,12 @@ contains
 
   call c_f_pointer(feedback%canopy_snow%data, data2D, [sizes%num_pfts, num_cols])
   data2D(:,:) = a_CanSnow
+
+  if (microbe_bool) then
+    num_comps = feedback%subsurface_mole_fraction_source%components
+    call c_f_pointer(feedback%subsurface_mole_fraction_source%data, data3D, [size_col, num_cols, num_comps])
+    data3D(:,:,:) = a_MFrac_ss_source
+  end if
 
   end subroutine CopyFeedbackToATS
 

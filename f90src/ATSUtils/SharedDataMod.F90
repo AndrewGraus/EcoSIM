@@ -51,6 +51,7 @@ Module SharedDataMod
   real(r8), allocatable :: a_TEMP_pad(:,:)    !temperature
   real(r8), allocatable :: a_SSES(:,:)    !subsurface energy source
   real(r8), allocatable :: a_SSWS(:,:)    !subsurface water source
+  real(r8), allocatable :: a_MFrac_ss_source(:,:,:)  !subsurface mole fraction source (ncells x ncols x components)
   real(r8), allocatable :: a_AREA3(:,:)
   real(r8), allocatable :: a_AREA3_pad(:,:)
   real(r8), allocatable :: a_ET(:)           !canopy evapotranspiration
@@ -84,8 +85,8 @@ Module SharedDataMod
   integer, allocatable :: a_PFT(:,:)
   integer :: NYS, I !total number of columns
   integer :: current_day, current_year
-  integer :: num_pfts
-  logical :: p_bool, a_bool, pheno_bool
+  integer :: num_pfts, num_components
+  logical :: p_bool, a_bool, pheno_bool, microbe_bool
   character(len=512), public :: ecosim_pft_file_path = ""
   contains
 

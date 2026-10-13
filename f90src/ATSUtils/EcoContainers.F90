@@ -200,6 +200,7 @@ module EcoContainers_module
      type (EcoVectorDouble) :: surface_energy_source
      type (EcoVectorDouble) :: snow_depth
      type (EcoMatrixDouble) :: canopy_snow
+     type (EcoTensorDouble) :: subsurface_mole_fraction_source  ! ncells x num_columns x num_components; microbes only
   end type EcoFeedback
 
   ! --------------------------------------------------------------------------
