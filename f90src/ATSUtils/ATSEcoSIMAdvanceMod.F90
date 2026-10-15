@@ -338,19 +338,21 @@ implicit none
     if (ldo_sp_mode) then
       DO NZ=1,num_pfts
         if (a_PFT(NZ,NY) .GT. 0.0) then
-            call root_canopy_mapping(a_PFT(NZ,NY), irootType_col(NY,NX), CanopyHeightLive_pft(NZ,NY,NX))
-            CanopyHeight_col(NY,NX) = CanopyHeightLive_pft(NZ,NY,NX)
             tlai_day_pft(NZ,NY,NX) = a_LAI(NZ,NY)
             tsai_day_pft(NZ,NY,NX) = a_SAI(NZ,NY)
             SnowOnCanopy_pft(NZ,NY,NX) = a_CanSnow(NZ,NY)
             !iPlantRootProfile_pft(NZ,NY,NX) = 3 !plant type for holding capacity
             TKCanopy_pft(NZ,NY,NX) = TairK_col(NY,NX)
-        
-            !Load the PFT array from ATS and fill the plant traits 
+
+            !Load the PFT array from ATS and fill the plant traits
             ! based on that mapping
             DATAPI(NZ,NY,NX) = a_PFT(NZ,NY)
             call ReadPlantProperties(nu_plt,NZ,NY,NX,pft_changed)
-            
+
+            !Link irootType and canopy height from per-pft trait values set in ReadPlantProperties
+            irootType_col(NY,NX)   = irootType_pft(NZ,NY,NX)
+            CanopyHeight_col(NY,NX) = CanopyHeightLive_pft(NZ,NY,NX)
+
             !Set cuticle resistances scaled from pft trait file
             H2OCuticleResist_pft(NZ,NY,NX) = CuticleResist_pft(NZ,NY,NX)/3600.0_r8
             CO2CuticleResist_pft(NZ,NY,NX) = CuticleResist_pft(NZ,NY,NX)*1.56_r8
@@ -521,42 +523,4 @@ implicit none
   !end associate
   end subroutine RunEcoSIMSurfaceBalance
   
-  subroutine root_canopy_mapping(plant_id, root_id, canopy_height)
-      implicit none
-  
-      ! Arguments
-      integer, intent(in)  :: plant_id
-      integer, intent(out) :: root_id
-      real(r8), intent(out) :: canopy_height
-      integer :: canopy_id
-  
-      !Needleleaf Evergreen
-      if (plant_id .EQ. 19.0_r8) then
-          root_id = 1
-          canopy_id = 5
-          canopy_height = 30.0_r8
-      else if (plant_id .EQ. 22.0_r8) then
-          root_id = 1
-          canopy_id = 4
-          canopy_height = 17.0_r8
-      else if (plant_id .EQ. 23.0_r8) then
-          root_id = 5
-          canopy_id = 4
-          canopy_height = 17.0_r8
-      else if (plant_id .EQ. 68.0_r8) then
-          root_id = 3
-          canopy_id = 3
-          canopy_height = 2.0_r8
-      else if (plant_id .EQ. 77.0_r8) then
-          root_id = 6
-          canopy_id = 2
-          canopy_height = 1.0_r8
-      else
-          root_id = 1
-          canopy_id = 1
-          canopy_height = 17.0_r8
-      end if
-  
-  end subroutine root_canopy_mapping
-
 end module ATSEcoSIMAdvanceMod

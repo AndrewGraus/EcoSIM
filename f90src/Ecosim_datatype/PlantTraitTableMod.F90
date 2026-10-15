@@ -121,6 +121,8 @@ module PlantTraitTableMod
   real(r8), target, allocatable :: rPCGrain_tab(:)
   real(r8), target, allocatable :: rPCRootr_tab(:)
   real(r8), target, allocatable :: rPCNoduler_tab(:)
+  integer, target, allocatable :: irootType_jackson_tab(:)    !Jackson et al. (1997) biome root type index [-]
+  real(r8), target, allocatable :: CanopyHeightLive_tab(:)    !live canopy height [m]
   character(len=10),allocatable :: pftss_tab(:)               !pft trait record name, including short pft-type name and koppen climate zone code
   character(len=40),allocatable :: pft_long_tab(:)            !long pft-type name
   character(len=4), allocatable :: pft_short_tab(:)           !short pft-type name
@@ -253,6 +255,8 @@ module PlantTraitTableMod
   allocate(rPCGrain_tab(npfts));rPCGrain_tab=0._r8
   allocate(rPCRootr_tab(npfts));rPCRootr_tab=0._r8
   allocate(rPCNoduler_tab(npfts));rPCNoduler_tab=0._r8
+  allocate(irootType_jackson_tab(npfts));irootType_jackson_tab=0
+  allocate(CanopyHeightLive_tab(npfts));CanopyHeightLive_tab=0._r8
   allocate(pftss_tab(npfts))
   allocate(pft_long_tab(npft))
   allocate(pft_short_tab(npft))
@@ -385,6 +389,8 @@ module PlantTraitTableMod
   call destroy(rPCGrain_tab)
   call destroy(rPCRootr_tab)
   call destroy(rPCNoduler_tab)
+  call destroy(irootType_jackson_tab)
+  call destroy(CanopyHeightLive_tab)
   end Subroutine DestructPlantTraitTable
 
   end module PlantTraitTableMod
